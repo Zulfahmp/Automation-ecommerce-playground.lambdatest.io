@@ -1,11 +1,19 @@
-import { Page, test } from "@playwright/test";
+import { Page, test, chromium } from "@playwright/test";
 import { Validate } from "../helper/customKeyword";
 const dotenv = require("dotenv");
 
-test("Login", async ({ page }) => {
+test("Login", async ({ browser }) => {
   //redirect to url and url on config
-  await page.goto("/");
+  // await page.goto("/");
   //to hover dropdown
+  // const browser = await chromium.launch();
+  // const context = await browser.newContext();
+  // const page = await context.newPage();
+
+  const context = await browser.newContext({ storageState: "user.json" });
+  const page = await context.newPage();
+
+  await page.goto("/");
   await page.hover("(//li[contains(@class,'nav-item dropdown')])[3]");
   //get text
   const txtLogin = await page.textContent(

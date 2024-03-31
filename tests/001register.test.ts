@@ -7,7 +7,6 @@ import {
   colors,
   adjectives,
 } from "unique-names-generator";
-import { SlowBuffer } from "buffer";
 
 const customConfig: Config = {
   dictionaries: [adjectives, colors],
@@ -52,8 +51,8 @@ test("Register", async ({ page }) => {
   await page.fill("#input-lastname", lastName);
   await page.fill("#input-email", email + "@yopmail.com");
   await page.fill("#input-telephone", randomPhoneNumb(12));
-  await page.fill("#input-password", "11223344");
-  await page.fill("#input-confirm", "11223344");
+  await page.fill("#input-password", process.env.Password as string);
+  await page.fill("#input-confirm", process.env.Password as string);
   await page.click("(//label[@class='custom-control-label'])[1]");
   await page.click("(//label[@class='custom-control-label'])[3]");
   await page.click("//input[@class='btn btn-primary']");
@@ -66,4 +65,18 @@ test("Register", async ({ page }) => {
   console.log(txtSccssRegist);
   new Validate(txtSccssRegist, "Your Account Has Been Created!");
   await page.click("//a[contains(text(),'Continue')]");
+  //to hover dropdown
+  await page.hover("(//li[contains(@class,'nav-item dropdown')])[3]");
+  //verify logout is visible
+  await page.isVisible("//span[text()[normalize-space()='Logout']]");
+  //click logout
+  await page.click("//span[text()[normalize-space()='Logout']]");
+  //verify logout success
+  await page.isVisible("//h1[@class='page-title my-3']");
+  const txtAccountLogout = await page.textContent(
+    "//h1[@class='page-title my-3']"
+  );
+  new Validate(txtAccountLogout, " Account Logout");
+  await page.click("//a[contains(text(),'Continue')]");
+  await page.context().storageState({ path: "user.json" });
 });
