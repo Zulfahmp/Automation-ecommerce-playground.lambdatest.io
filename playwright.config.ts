@@ -7,7 +7,11 @@ dotenv.config({
 });
 
 export default defineConfig({
-  testMatch: ["tests/001register.test.ts", "tests/002login.test.ts"],
+  testMatch: [
+    "tests/001register.test.ts",
+    "tests/002login.test.ts",
+    "003editAccountInfo.test.ts",
+  ],
   reporter: "html",
   use: {
     viewport: null,
