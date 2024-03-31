@@ -1,39 +1,35 @@
 import { Page, test, chromium } from "@playwright/test";
-import { Validate } from "../helper/customKeyword";
+import { Validate } from "../helper/customKeyword.test";
+import { login } from "../object-repositories/login";
 const dotenv = require("dotenv");
 
-test("Login", async ({ browser }) => {
-  //redirect to url and url on config
-  // await page.goto("/");
-  //to hover dropdown
-  // const browser = await chromium.launch();
-  // const context = await browser.newContext();
-  // const page = await context.newPage();
+const loginObject = new login();
 
-  const context = await browser.newContext({ storageState: "user.json" });
+test("Login", async ({ browser }) => {
+  //load session after register
+  const context = await browser.newContext({
+    storageState: "session/user.json",
+  });
   const page = await context.newPage();
 
   await page.goto("/");
   await page.hover("(//li[contains(@class,'nav-item dropdown')])[3]");
   //get text
-  const txtLogin = await page.textContent(
-    "//span[text()[normalize-space()='Login']]"
-  );
+  const txtLogin = await page.textContent(loginObject.menuLogin);
   new Validate(txtLogin, txtLogin);
   //click register in dropdown
-  await page.click("//span[text()[normalize-space()='Login']]");
+  await page.click(loginObject.menuLogin);
 
-  await page.isVisible("//h2[text()='Returning Customer']", { timeout: 5000 });
+  await page.isVisible(loginObject.textReturningCustomer, { timeout: 5000 });
 
   const txtReturningCustomer = await page.textContent(
-    "//h2[text()='Returning Customer']"
+    loginObject.textReturningCustomer
   );
 
   new Validate(txtReturningCustomer, "Returning Customer");
 
-  await page.fill("#input-email", process.env.Email as string);
-  await page.fill("#input-password", process.env.Password as string);
-  await page.click("//input[@class='btn btn-primary']");
-
-  await page.pause();
+  await page.fill(loginObject.fieldEmail, process.env.Email as string);
+  await page.fill(loginObject.fieldPassword, process.env.Password as string);
+  await page.click(loginObject.btnLogin);
+  await page.context().storageState({ path: "session/login.json" });
 });
