@@ -49,6 +49,6 @@ process.env.LastName = lastNameRender;
 
 //generate random email
 export const emailRender: string =
-  uniqueNamesGenerator(customConfig) + "@yopmail.com"; // big-donkey
+  uniqueNamesGenerator(customConfig) + "@yopmail.com";
 console.log("Ini email " + emailRender);
 process.env.Email = emailRender;
